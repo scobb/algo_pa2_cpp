@@ -44,6 +44,7 @@ void Parser::process(){
         cout << "start_time: " << start_time << endl;
         cout << "end_time: " << end_time << endl;
 
+        vector<Node*> path = findPath(start_node, end_node, start_time, end_time);
 
 
     } else {
@@ -54,25 +55,44 @@ void Parser::process(){
 
 }
 
-bool Parser::findPath(int start_node, int end_node, int start_time, int end_time) {
+vector<Node*> Parser::findPath(int start_node, int end_node, int start_time, int end_time) {
     vector<Node*> path = vector<Node*>();
-    Node* current_node = &node_map[start_node];
-    path.push_back(current_node);
+    vector<Node::Connection> connections = vector<Node::Connection>();
+    path.push_back(&node_map[start_node]);
     int current_time = start_time;
-    while (current_node->getId() != end_node){
-        while (current_node->hasConnections()){
-            Node::Connection conn = current_node->getConnection();
-            if (conn.getN1()->getId() == start_node and !conn.getN2()->isTraversed() and conn.getTime() <= end_time) {
-                current_time = conn.getTime();
-                conn.getN2()->setTraversed(true);
-                current_node = &node_map[conn.getN2()->getId()];
-            } else if (conn.getN2()->getId() == start_node and !conn.getN1()->isTraversed() and conn.getTime() <= end_time){
-                current_time = conn.getTime();
-                conn.getN1()->setTraversed(true);
-                current_node = &node_map[conn.getN1()->getId()];
+    while (!path.empty() && path.back()->getId() != end_node && current_time <= end_time){
+        if (path.back()->hasConnections()){
+            Node::Connection conn = path.back()->getConnection();
+            if (conn.getN1()->getId() == start_node && !conn.getN2()->isTraversed() && conn.getTime() <= end_time) {
+                current_time = traverse(path, connections, conn.getN2(), &conn);
+//                current_time = conn.getTime();
+//                conn.getN2()->setTraversed(true);
+//                path.push_back(conn.getN2());
+//                connections.push_back(conn);
+            } else if (conn.getN2()->getId() == start_node && !conn.getN1()->isTraversed() && conn.getTime() <= end_time){
+                current_time = traverse(path, connections, conn.getN1(), &conn);
+//                conn.getN1()->setTraversed(true);
+//                path.push_back(conn.getN1());
+//                connections.push_back(conn);
             }
+        } else {
+            backtrack(path, connections);
         }
-
     }
-    return false;
+    return path;
+}
+
+int Parser::traverse(vector<Node*>&path, vector<Node::Connection>& connections, Node* node, Node::Connection* connection){
+    path.push_back(node);
+    node->setTraversed(true);
+    connections.push_back(*connection);
+    return connection->getTime();
+}
+
+void Parser::backtrack(vector<Node*>& path, vector<Node::Connection>& connections){
+    while (!path.empty() && !path.back()->hasConnections()) {
+        path.back()->setTraversed(false);
+        path.pop_back();
+        connections.pop_back();
+    }
 }
