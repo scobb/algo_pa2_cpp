@@ -35,6 +35,7 @@ public:
         Node *getN2() const {
             return n2;
         }
+        friend std::ostream& operator<<(std::ostream& os, const Node::Connection& conn);
     };
 private:
     int id;
@@ -86,4 +87,5 @@ public:
     }
 
 };
+std::ostream& operator<<(std::ostream& os, const Node::Connection& conn);
 #endif
