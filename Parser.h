@@ -8,6 +8,7 @@
 class Parser {
 private:
     std::string filename;
+    int start_time;
     int backtrack(std::vector<Node *>& path, std::vector<Node::Connection>& connections);
     void output(std::vector<Node::Connection>);
     int traverse(std::vector<Node *> &path, std::vector<Node::Connection> &connections, Node *node, Node::Connection *connection);

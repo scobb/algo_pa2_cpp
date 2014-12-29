@@ -86,6 +86,30 @@ public:
         return ret_val;
     }
 
+    bool hasValidConnection(int time) {
+        if (connections.empty()){
+            return false;
+        } else {
+            for (Connection conn: connections){
+                if (conn.getTime() >= time){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    Connection getValidConnection(int time) {
+        for (unsigned long i = 0; i <= connections.size(); i++){
+            if (connections[i].getTime() >= time){
+                Connection tmp = connections[i];
+                connections[i] = connections[connections.size()-1];
+                connections.pop_back();
+                return tmp;
+            }
+        }
+        return Connection();
+    }
 };
 std::ostream& operator<<(std::ostream& os, const Node::Connection& conn);
 #endif
