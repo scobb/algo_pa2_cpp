@@ -39,10 +39,10 @@ void Parser::process(){
         int start_time = stoi(split_line[2]);
         int end_time = stoi(split_line[3]);
 
-        cout << "start_node: " << start_node << endl;
-        cout << "end_node: " << end_node << endl;
-        cout << "start_time: " << start_time << endl;
-        cout << "end_time: " << end_time << endl;
+//        cout << "start_node: " << start_node << endl;
+//        cout << "end_node: " << end_node << endl;
+//        cout << "start_time: " << start_time << endl;
+//        cout << "end_time: " << end_time << endl;
 
         vector<Node::Connection> path = findPath(start_node, end_node, start_time, end_time);
         output(path);
