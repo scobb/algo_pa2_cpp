@@ -81,12 +81,12 @@ public:
         std::sort(connections.begin(), connections.end());
     }
 
-    bool hasValidConnection(int time) {
+    bool hasValidConnection(int time, int end_time) {
         if (connections.empty()){
             return false;
         } else {
             for (Connection conn: connections){
-                if (conn.getTime() >= time){
+                if (conn.getTime() >= time && conn.getTime() <= end_time){
                     return true;
                 }
             }
@@ -94,9 +94,9 @@ public:
         return false;
     }
 
-    Connection getValidConnection(int time) {
+    Connection getValidConnection(int time, int end_time) {
         for (std::vector<Connection>::iterator iter = connections.begin(); iter != connections.end(); iter++){
-            if (iter->getTime() >= time){
+            if (iter->getTime() >= time && iter->getTime() <= end_time){
                 Connection tmp = *iter;
                 connections.erase(iter);
                 return tmp;
