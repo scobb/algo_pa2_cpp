@@ -1,25 +1,27 @@
 #ifndef _NODE_H
 #define _NODE_H
+
 #include <vector>
 #include <iostream>
 
-class Node{
+class Node {
 public:
-    class Connection{
+    class Connection {
     private:
         int time;
-        Node* n1;
-        Node* n2;
+        Node *n1;
+        Node *n2;
     public:
-        Connection(){
+        Connection() {
             time = -1;
             n1 = NULL;
             n2 = NULL;
         }
+
         Connection(int time, Node *n1, Node *n2) : time(time), n1(n1), n2(n2) {
         }
 
-        Connection(const Connection& other) {
+        Connection(const Connection &other) {
             this->time = other.time;
             this->n1 = other.n1;
             this->n2 = other.n2;
@@ -36,8 +38,10 @@ public:
         Node *getN2() const {
             return n2;
         }
-        friend std::ostream& operator<<(std::ostream& os, const Node::Connection& conn);
+
+        friend std::ostream &operator<<(std::ostream &os, const Node::Connection &conn);
     };
+
 private:
     int id;
     bool traversed;
@@ -45,22 +49,25 @@ private:
 
 public:
     // bare constructor
-    Node(){
-        traversed=true;
+    Node() {
+        traversed = true;
         id = -1;
         connections = std::vector<Connection>();
     }
+
     // basic constructor
     Node(int id) : id(id) {
         traversed = false;
         connections = std::vector<Connection>();
     }
+
     // copy constructor
-    Node(const Node& other) {
+    Node(const Node &other) {
         this->id = other.id;
         traversed = false;
         connections = std::vector<Connection>();
     }
+
     int getId() const {
         return id;
     }
@@ -77,14 +84,14 @@ public:
         connections.push_back(conn);
     }
 
-    void sortConnections(){
+    void sortConnections() {
         std::sort(connections.begin(), connections.end());
     }
 
     bool hasValidConnection(int time, int end_time) {
-        if (!connections.empty()){
-            for (Connection conn: connections){
-                if (conn.getTime() >= time && conn.getTime() <= end_time){
+        if (!connections.empty()) {
+            for (Connection conn: connections) {
+                if (conn.getTime() >= time && conn.getTime() <= end_time) {
                     return true;
                 }
             }
@@ -96,8 +103,8 @@ public:
         /* pre-condition: Should only be used after hasValidConnection() returns true
         *  return: a valid connection that is removed from the connections vector
         */
-        for (std::vector<Connection>::iterator iter = connections.begin(); iter != connections.end(); iter++){
-            if (iter->getTime() >= time && iter->getTime() <= end_time){
+        for (std::vector<Connection>::iterator iter = connections.begin(); iter != connections.end(); iter++) {
+            if (iter->getTime() >= time && iter->getTime() <= end_time) {
                 Connection tmp = *iter;
                 connections.erase(iter);
                 return tmp;
@@ -108,6 +115,9 @@ public:
         return Connection();
     }
 };
-std::ostream& operator<<(std::ostream& os, const Node::Connection& conn);
-bool operator<(const Node::Connection& left, const Node::Connection& right);
+
+std::ostream &operator<<(std::ostream &os, const Node::Connection &conn);
+
+bool operator<(const Node::Connection &left, const Node::Connection &right);
+
 #endif

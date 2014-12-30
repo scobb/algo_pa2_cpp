@@ -4,7 +4,7 @@
 
 using namespace std;
 
-void Parser::parse(ifstream* my_ifstream){
+void Parser::parse(ifstream *my_ifstream) {
     if (my_ifstream->is_open()) {
         // local var to hold lines of the file
         string line;
@@ -48,12 +48,12 @@ void Parser::parse(ifstream* my_ifstream){
     }
 }
 
-void Parser::process(){
+void Parser::process() {
 
     // parse input file to create objects
     ifstream my_ifstream = ifstream();
     my_ifstream.open(this->filename);
-    if (my_ifstream.is_open()){
+    if (my_ifstream.is_open()) {
         // populate objects
         parse(&my_ifstream);
 
@@ -70,7 +70,7 @@ void Parser::process(){
 
 vector<Node::Connection> Parser::findPath() {
     // vectors to hold nodes, connections (edges)
-    vector<Node*> path = vector<Node*>();
+    vector<Node *> path = vector<Node *>();
     vector<Node::Connection> connections = vector<Node::Connection>();
 
     // add initial node to start
@@ -79,9 +79,9 @@ vector<Node::Connection> Parser::findPath() {
     int current_time = start_time;
 
     // have we arrived at the end_node or failed?
-    while (!path.empty() && path.back()->getId() != end_node){
+    while (!path.empty() && path.back()->getId() != end_node) {
         // do we have a valid connection for when and where we are?
-        if (path.back()->hasValidConnection(current_time, end_time)){
+        if (path.back()->hasValidConnection(current_time, end_time)) {
 
             // get that connection
             Node::Connection conn = path.back()->getValidConnection(current_time, end_time);
@@ -89,7 +89,7 @@ vector<Node::Connection> Parser::findPath() {
             // determine which part of the connection is the new node
             if (conn.getN1()->getId() == path.back()->getId() && !conn.getN2()->isTraversed()) {
                 current_time = traverse(path, connections, conn.getN2(), &conn);
-            } else if (conn.getN2()->getId() == path.back()->getId() && !conn.getN1()->isTraversed()){
+            } else if (conn.getN2()->getId() == path.back()->getId() && !conn.getN1()->isTraversed()) {
                 current_time = traverse(path, connections, conn.getN1(), &conn);
             }
         } else {
@@ -101,14 +101,14 @@ vector<Node::Connection> Parser::findPath() {
     return connections;
 }
 
-int Parser::traverse(vector<Node*>&path, vector<Node::Connection>& connections, Node* node, Node::Connection* connection){
+int Parser::traverse(vector<Node *> &path, vector<Node::Connection> &connections, Node *node, Node::Connection *connection) {
     path.push_back(node);
     node->setTraversed(true);
     connections.push_back(*connection);
     return connection->getTime();
 }
 
-int Parser::backtrack(vector<Node*>& path, vector<Node::Connection>& connections){
+int Parser::backtrack(vector<Node *> &path, vector<Node::Connection> &connections) {
     path.back()->setTraversed(false);
     path.pop_back();
     if (!connections.empty()) {
@@ -126,7 +126,7 @@ int Parser::backtrack(vector<Node*>& path, vector<Node::Connection>& connections
 
 void Parser::output(vector<Node::Connection> path) {
     cout << path.size() << endl;
-    for (Node::Connection conn: path){
+    for (Node::Connection conn: path) {
         cout << conn;
     }
 
