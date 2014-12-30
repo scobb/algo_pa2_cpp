@@ -73,32 +73,12 @@ public:
         Node::traversed = traversed;
     }
 
-    void addConnection(Node* other, int time) {
-        connections.push_back(Connection(time, this, other));
-    }
-
     void addConnection(Connection conn) {
         connections.push_back(conn);
     }
 
     void sortConnections(){
-//        std::cout << std::endl;
-//        std::cout << "Sorting." << std::endl;
         std::sort(connections.begin(), connections.end());
-//        for (Connection conn: connections){
-//            std::cout << conn;
-//        }
-
-    }
-
-    bool hasConnections(){
-        return !connections.empty();
-    }
-
-    Connection getConnection() {
-        Connection ret_val = connections.back();
-        connections.pop_back();
-        return ret_val;
     }
 
     bool hasValidConnection(int time) {
@@ -115,14 +95,8 @@ public:
     }
 
     Connection getValidConnection(int time) {
-//        std::cout << "Getting valid connection for " << this->getId() << " at time " << time << std::endl;
-//        for (Connection conn: connections){
-//            std::cout << conn;
-//        }
         for (std::vector<Connection>::iterator iter = connections.begin(); iter != connections.end(); iter++){
-//            std::cout << "Inspecting " << *iter;
             if (iter->getTime() >= time){
-//                std::cout << "Time is valid." << std::endl;
                 Connection tmp = *iter;
                 connections.erase(iter);
                 return tmp;

@@ -1,7 +1,6 @@
 #include "Parser.h"
 #include "split.h"
 #include <fstream>
-#include <iostream>
 
 using namespace std;
 void Parser::process(){
@@ -11,17 +10,13 @@ void Parser::process(){
     if (my_ifstream.is_open()){
         getline(my_ifstream, line);
         vector<string> first_line = split(line, ' ');
-        int num_devices = stoi(first_line[0]);
         int num_traces = stoi(first_line[1]);
-//        cout << "num_devices: " << num_devices << endl;
-//        cout << "num_traces: " << num_traces << endl;
         for (int i = 0; i < num_traces; i++) {
             getline(my_ifstream, line);
             vector<string> split_line = split(line, ' ');
             int n1 = stoi(split_line[0]);
             int n2 = stoi(split_line[1]);
             int t = stoi(split_line[2]);
-//            cout << "Adding " << n1 << " " << n2 << " " << t << endl;
             if (!node_map.count(n1)){
                 node_map[n1] = Node(n1);
             }
@@ -43,11 +38,6 @@ void Parser::process(){
             kv.second.sortConnections();
         }
 
-//        cout << "start_node: " << start_node << endl;
-//        cout << "end_node: " << end_node << endl;
-//        cout << "start_time: " << start_time << endl;
-//        cout << "end_time: " << end_time << endl;
-
         vector<Node::Connection> path = findPath(start_node, end_node, start_time, end_time);
         output(path);
 
@@ -63,15 +53,8 @@ vector<Node::Connection> Parser::findPath(int start_node, int end_node, int star
     node_map[start_node].setTraversed(true);
     int current_time = start_time;
     while (!path.empty() && path.back()->getId() != end_node){
-//        cout << endl;
-//        cout << "current_time: " << current_time << endl;
         if (path.back()->hasValidConnection(current_time) && current_time <= end_time){
-//            cout << "path.back() is " << path.back()->getId() << endl;
             Node::Connection conn = path.back()->getValidConnection(current_time);
-//            cout << "conn: " << conn;
-//            cout << "conn.getN1()->isTraversed(): " << conn.getN1()->isTraversed() << endl;
-//            cout << "conn.getN2()->isTraversed(): " << conn.getN2()->isTraversed() << endl;
-//            cout << "conn.getTime(): " << conn.getTime() << ", end_time: " << end_time << endl;
             if (conn.getN1()->getId() == path.back()->getId() && !conn.getN2()->isTraversed()
                     && conn.getTime() <= end_time && conn.getTime() >= current_time) {
                 current_time = traverse(path, connections, conn.getN2(), &conn);
@@ -83,15 +66,10 @@ vector<Node::Connection> Parser::findPath(int start_node, int end_node, int star
             current_time = backtrack(path, connections);
         }
     }
-//    cout << "connections.size(): " << (int)connections.size() << endl;
-//    for (Node::Connection connection: connections){
-//        cout << connection;
-//    }
     return connections;
 }
 
 int Parser::traverse(vector<Node*>&path, vector<Node::Connection>& connections, Node* node, Node::Connection* connection){
-//    cout << "Traversing node: " << node->getId() << endl;
     path.push_back(node);
     node->setTraversed(true);
     connections.push_back(*connection);
@@ -99,16 +77,16 @@ int Parser::traverse(vector<Node*>&path, vector<Node::Connection>& connections, 
 }
 
 int Parser::backtrack(vector<Node*>& path, vector<Node::Connection>& connections){
-//    cout << "Backtracking on node: " << path.back()->getId() << endl;
-//    cout << "connections.size(): " << connections.size() << endl;
-//    cout << "path.size(): " << path.size() << endl;
-//    cout << "popping back" << endl;
     path.back()->setTraversed(false);
     path.pop_back();
     if (!connections.empty()) {
         // if we're removing the last node, it doesn't have a connection
         connections.pop_back();
-        return connections.back().getTime();
+        if (!connections.empty())
+            return connections.back().getTime();
+        else {
+            return start_time;
+        }
     } else {
         return start_time;
     }
