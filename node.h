@@ -82,9 +82,7 @@ public:
     }
 
     bool hasValidConnection(int time, int end_time) {
-        if (connections.empty()){
-            return false;
-        } else {
+        if (!connections.empty()){
             for (Connection conn: connections){
                 if (conn.getTime() >= time && conn.getTime() <= end_time){
                     return true;
@@ -95,6 +93,9 @@ public:
     }
 
     Connection getValidConnection(int time, int end_time) {
+        /* pre-condition: Should only be used after hasValidConnection() returns true
+        *  return: a valid connection that is removed from the connections vector
+        */
         for (std::vector<Connection>::iterator iter = connections.begin(); iter != connections.end(); iter++){
             if (iter->getTime() >= time && iter->getTime() <= end_time){
                 Connection tmp = *iter;
@@ -102,6 +103,8 @@ public:
                 return tmp;
             }
         }
+
+        // should not be reached.
         return Connection();
     }
 };
