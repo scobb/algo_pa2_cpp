@@ -1,6 +1,7 @@
 #ifndef _NODE_H
 #define _NODE_H
 #include <vector>
+#include <iostream>
 
 class Node{
 public:
@@ -76,6 +77,20 @@ public:
         connections.push_back(Connection(time, this, other));
     }
 
+    void addConnection(Connection conn) {
+        connections.push_back(conn);
+    }
+
+    void sortConnections(){
+//        std::cout << std::endl;
+//        std::cout << "Sorting." << std::endl;
+        std::sort(connections.begin(), connections.end());
+//        for (Connection conn: connections){
+//            std::cout << conn;
+//        }
+
+    }
+
     bool hasConnections(){
         return !connections.empty();
     }
@@ -100,11 +115,16 @@ public:
     }
 
     Connection getValidConnection(int time) {
-        for (unsigned long i = 0; i <= connections.size(); i++){
-            if (connections[i].getTime() >= time){
-                Connection tmp = connections[i];
-                connections[i] = connections[connections.size()-1];
-                connections.pop_back();
+//        std::cout << "Getting valid connection for " << this->getId() << " at time " << time << std::endl;
+//        for (Connection conn: connections){
+//            std::cout << conn;
+//        }
+        for (std::vector<Connection>::iterator iter = connections.begin(); iter != connections.end(); iter++){
+//            std::cout << "Inspecting " << *iter;
+            if (iter->getTime() >= time){
+//                std::cout << "Time is valid." << std::endl;
+                Connection tmp = *iter;
+                connections.erase(iter);
                 return tmp;
             }
         }
@@ -112,4 +132,5 @@ public:
     }
 };
 std::ostream& operator<<(std::ostream& os, const Node::Connection& conn);
+bool operator<(const Node::Connection& left, const Node::Connection& right);
 #endif

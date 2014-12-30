@@ -8,7 +8,7 @@ for dir in ${IN_DIRS[@]}; do
             num="${BASH_REMATCH[1]}"
             ./Algo_PA2 $dir/$file > test.out
             if [[ $(diff test.out $dir/out${num}.txt) != "" ]]; then
-                echo FAIL: $file: $(diff test.out $dir/out${num}.txt)
+                echo "FAIL: $file: $(diff test.out $dir/out${num}.txt)"
             fi
         fi
     done

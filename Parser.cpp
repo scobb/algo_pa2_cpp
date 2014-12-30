@@ -28,8 +28,9 @@ void Parser::process(){
             if (!node_map.count(n2)){
                 node_map[n2] = Node(n2);
             }
-            node_map[n1].addConnection(&node_map[n2], t);
-            node_map[n2].addConnection(&node_map[n1], t);
+            Node::Connection conn = Node::Connection(t, &node_map[n1], &node_map[n2]);
+            node_map[n1].addConnection(conn);
+            node_map[n2].addConnection(conn);
         }
         getline(my_ifstream, line);
         my_ifstream.close();
@@ -38,6 +39,9 @@ void Parser::process(){
         int end_node = stoi(split_line[1]);
         start_time = stoi(split_line[2]);
         int end_time = stoi(split_line[3]);
+        for (auto& kv : node_map){
+            kv.second.sortConnections();
+        }
 
 //        cout << "start_node: " << start_node << endl;
 //        cout << "end_node: " << end_node << endl;
@@ -104,16 +108,9 @@ int Parser::backtrack(vector<Node*>& path, vector<Node::Connection>& connections
     if (!connections.empty()) {
         // if we're removing the last node, it doesn't have a connection
         connections.pop_back();
-    }
-
-    if (connections.empty()) {
-        // we're done unsuccessfully, but still need to return an integer
-//        cout << "setting time to " << start_time << endl;
-        return start_time;
-    } else {
-        // return the current time after using this connection
-//        cout << "setting time to " << connections.back().getTime();
         return connections.back().getTime();
+    } else {
+        return start_time;
     }
 }
 
